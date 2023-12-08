@@ -1,0 +1,28 @@
+{
+    "update_id": 569124917,
+    "message": {
+        "message_id": 5362,
+        "from": {
+            "id": 100000000,
+            "is_bot": false,
+            "first_name": "Igor",
+            "username": "username",
+            "language_code": "en"
+        },
+        "chat": {
+            "id": 100000000,
+            "first_name": "Igor",
+            "username": "username",
+            "type": "private"
+        },
+        "date": 1701129970,
+        "text": "/cat",
+        "entities": [
+            {
+                "offset": 0,
+                "length": 4,
+                "type": "bot_command"
+            }
+        ]
+    }
+}

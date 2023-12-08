@@ -1,0 +1,5 @@
+(test
+ (name tests)
+ (flags
+  (:standard -warn-error -A))
+ (libraries yojson))

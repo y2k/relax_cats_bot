@@ -1,0 +1,27 @@
+{
+    "message": {
+        "message_id": 2882,
+        "from": {
+            "id": 241854720,
+            "is_bot": false,
+            "first_name": "Igor",
+            "username": "angmarr",
+            "language_code": "en"
+        },
+        "chat": {
+            "id": 241854720,
+            "first_name": "Igor",
+            "username": "angmarr",
+            "type": "private"
+        },
+        "date": 1595600304,
+        "text": "/dog@some_bot",
+        "entities": [
+            {
+                "offset": 0,
+                "length": 4,
+                "type": "bot_command"
+            }
+        ]
+    }
+}
