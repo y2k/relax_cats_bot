@@ -1,11 +1,15 @@
 name = "relax-cats-bot"
 main = "_build/default/bin/main.bc.js"
 compatibility_date = "2023-10-30"
-node_compat = true
+node_compat = false
 
 [build]
-command = "make build_wrangler"
-watch_dir = ["bin", "lib"]
+command = "~/Projects/language/clj2js/_build/default/bin/main.exe bin/main.clj > ~/Projects/relax_cats_bot/_build/default/bin/main.bc.js"
+watch_dir = ["bin", "lib", "playground"]
+
+# [build]
+# command = "make build_wrangler"
+# watch_dir = ["bin", "lib", "playground"]
 
 # Variable bindings. These are arbitrary, plaintext strings (similar to environment variables)
 # Note: Use secrets to store sensitive data.
