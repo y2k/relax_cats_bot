@@ -7,6 +7,11 @@ node_compat = false
 command = "~/Projects/language/clj2js/_build/default/bin/main.exe bin/main.clj > ~/Projects/relax_cats_bot/_build/default/bin/main.bc.js"
 watch_dir = ["bin", "lib", "playground"]
 
+[[d1_databases]]
+binding = "DB"
+database_name = "LAST_REQUEST_TIME_D1"
+database_id = "93980957-5d8d-4127-a10f-c6353905cdaa"
+
 # [build]
 # command = "make build_wrangler"
 # watch_dir = ["bin", "lib", "playground"]

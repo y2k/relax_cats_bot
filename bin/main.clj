@@ -55,15 +55,37 @@
                         :headers {"content-type" "application/json"}}))))
       (next))))
 
+(defn rate_limit_request [next env json]
+  (let [user_id (or json?.message?.from?.id json?.callback_query?.from?.id)]
+    (if user_id
+      (->
+       (.prepare env.DB "SELECT time FROM last_request_time WHERE user_id = ?1")
+       (.bind user_id)
+       (.first "time")
+       (.then
+        (fn [time]
+          (if (> (- (Date/now) (or time 0)) 2000)
+            (.then
+             (next)
+             (fn []
+               (->
+                (.prepare env.DB "INSERT OR REPLACE INTO last_request_time (user_id, time) VALUES (?1, ?2)")
+                (.bind user_id (Date/now))
+                (.run))))
+            null))))
+      null)))
+
 (defn fetch_handler [request env context]
   (->
    (.json request)
    (.then (fn [json]
-            (try_handle_cat_command
+            (rate_limit_request
              (fn []
-               (try_handle_button_click
+               (try_handle_cat_command
                 (fn []
-                  (.warn console "[LOG] Message not handled:\n" json)) env json)) env json)))
+                  (try_handle_button_click
+                   (fn []
+                     (.warn console "[LOG] Message not handled:\n" json)) env json)) env json)) env json)))
    (.catch (.error console))
    (.then (fn [] (Response. "")))))
 
