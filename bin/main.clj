@@ -1,6 +1,6 @@
 (def reload_limit 3)
 
-(defn try_handle_button_click [next env json]
+(defn try_handle_button_click [env json next]
   (let [chat_id json?.callback_query?.message?.chat?.id
         message_id json?.callback_query?.message?.message_id
         user_id json?.callback_query?.from?.id
@@ -36,7 +36,7 @@
                   :headers {"content-type" "application/json"}})))
       (next))))
 
-(defn try_handle_cat_command [next env json]
+(defn try_handle_cat_command [env json next]
   (let [message json?.message?.text
         chat_id json?.message?.chat?.id
         user_id json?.message?.from?.id]
@@ -55,7 +55,7 @@
                         :headers {"content-type" "application/json"}}))))
       (next))))
 
-(defn rate_limit_request [next env json]
+(defn rate_limit_request [env json next]
   (let [user_id (or json?.message?.from?.id json?.callback_query?.from?.id)]
     (if user_id
       (->
@@ -75,21 +75,18 @@
             null))))
       null)))
 
-(defn fetch_handler [request env context]
+(defn fetch_handler [request env]
   (->
    (.json request)
-   (.then (fn [json]
-            (rate_limit_request
-             (fn []
-               (try_handle_cat_command
-                (fn []
-                  (try_handle_button_click
-                   (fn []
-                     (.warn console "[LOG] Message not handled:\n" json)) env json)) env json)) env json)))
+   (.then
+    (fn [json]
+      (->>
+       (.warn console "[LOG] Message not handled:\n" json) (fn [])
+       (try_handle_button_click env json) (fn [])
+       (try_handle_cat_command env json) (fn [])
+       (rate_limit_request env json))))
    (.catch (.error console))
    (.then (fn [] (Response. "")))))
 
-(defn json_to_string [x]
-  (.stringify JSON x null 2))
-
+(defn json_to_string [x] (.stringify JSON x null 2))
 (export-default {:fetch fetch_handler})
