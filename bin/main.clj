@@ -67,13 +67,15 @@
        (.then
         (fn [time]
           (if (> (- (Date/now) (or time 0)) 1500)
-            (.then
-             (next)
-             (fn []
-               (->
-                (.prepare env.DB "INSERT OR REPLACE INTO last_request_time (user_id, time) VALUES (?1, ?2)")
-                (.bind user_id (Date/now))
-                (.run))))
+            (->
+             (Promise/resolve)
+             (.then next)
+             (.then
+              (fn []
+                (->
+                 (.prepare env.DB "INSERT OR REPLACE INTO last_request_time (user_id, time) VALUES (?1, ?2)")
+                 (.bind user_id (Date/now))
+                 (.run)))))
             null))))
       null)))
 
@@ -83,7 +85,7 @@
    (.then
     (fn [json]
       (->>
-       (.warn console "[LOG] Message not handled:\n" json) (fn [])
+       (.log console "[LOG] Message not handled:\n" json) (fn [])
        (try_handle_button_click env json) (fn [])
        (try_handle_cat_command env json) (fn [])
        (rate_limit_request env json))))
