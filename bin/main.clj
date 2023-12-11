@@ -4,43 +4,45 @@
   (let [chat_id json?.callback_query?.message?.chat?.id
         message_id json?.callback_query?.message?.message_id
         user_id json?.callback_query?.from?.id
-        data json?.callback_query?.data
-        payload (.parse JSON data)
-        count payload.c
-        data_user_id payload.u]
-    (if (and data (= data_user_id user_id))
-      (if (= count -1)
-        (fetch (+ "https://api.telegram.org/bot" env.TG_TOKEN "/editMessageReplyMarkup")
-               {:method "POST"
-                :body (json_to_string {:chat_id chat_id :message_id message_id})
-                :headers {"content-type" "application/json"}})
-        (if (<= count reload_limit)
-          (->
-           (fetch (+ "https://api.giphy.com/v1/gifs/random?rating=pg&api_key=" env.GIPHY_TOKEN "&tag=cat"))
-           (.then (fn [r] (.json r)))
-           (.then (fn [x]
-                    (let [url (+ "https://api.telegram.org/bot" env.TG_TOKEN "/editMessageMedia")
-                          request {:media {:type "video" :media x.data.images.original.mp4}
-                                   :chat_id chat_id
-                                   :message_id message_id
-                                   :reply_markup {:inline_keyboard
-                                                  [[{:text (if (= reload_limit count) "Delete" (+ "Next [" (- reload_limit count) "]"))
-                                                     :callback_data (.stringify JSON {:c (+ count 1) :u user_id})}
-                                                    {:text "Done" :callback_data (.stringify JSON {:c -1 :u user_id})}]]}}]
-                      (fetch url {:method "POST"
-                                  :body (json_to_string request)
-                                  :headers {"content-type" "application/json"}})))))
-          (fetch (+ "https://api.telegram.org/bot" env.TG_TOKEN "/deleteMessage")
-                 {:method "POST"
-                  :body (json_to_string {:chat_id chat_id :message_id message_id})
-                  :headers {"content-type" "application/json"}})))
+        data json?.callback_query?.data]
+    (if data
+      (let [payload (.parse JSON data)
+            count payload.c
+            data_user_id payload.u]
+        (if (= data_user_id user_id)
+          (if (= count -1)
+            (fetch (+ "https://api.telegram.org/bot" env.TG_TOKEN "/editMessageReplyMarkup")
+                   {:method "POST"
+                    :body (json_to_string {:chat_id chat_id :message_id message_id})
+                    :headers {"content-type" "application/json"}})
+            (if (<= count reload_limit)
+              (->
+               (fetch (+ "https://api.giphy.com/v1/gifs/random?rating=pg&api_key=" env.GIPHY_TOKEN "&tag=cat"))
+               (.then (fn [r] (.json r)))
+               (.then (fn [x]
+                        (let [url (+ "https://api.telegram.org/bot" env.TG_TOKEN "/editMessageMedia")
+                              request {:media {:type "video" :media x.data.images.original.mp4}
+                                       :chat_id chat_id
+                                       :message_id message_id
+                                       :reply_markup {:inline_keyboard
+                                                      [[{:text (if (= reload_limit count) "Delete" (+ "Next [" (- reload_limit count) "]"))
+                                                         :callback_data (.stringify JSON {:c (+ count 1) :u user_id})}
+                                                        {:text "Done" :callback_data (.stringify JSON {:c -1 :u user_id})}]]}}]
+                          (fetch url {:method "POST"
+                                      :body (json_to_string request)
+                                      :headers {"content-type" "application/json"}})))))
+              (fetch (+ "https://api.telegram.org/bot" env.TG_TOKEN "/deleteMessage")
+                     {:method "POST"
+                      :body (json_to_string {:chat_id chat_id :message_id message_id})
+                      :headers {"content-type" "application/json"}})))
+          (next)))
       (next))))
 
 (defn try_handle_cat_command [env json next]
-  (let [message json?.message?.text
+  (let [text json?.message?.text
         chat_id json?.message?.chat?.id
         user_id json?.message?.from?.id]
-    (if (and message (.startsWith message "/cat"))
+    (if (and text (.startsWith text "/cat"))
       (->
        (fetch (+ "https://api.giphy.com/v1/gifs/random?rating=pg&api_key=" env.GIPHY_TOKEN "&tag=cat"))
        (.then (fn [r] (.json r)))
@@ -64,7 +66,7 @@
        (.first "time")
        (.then
         (fn [time]
-          (if (> (- (Date/now) (or time 0)) 2000)
+          (if (> (- (Date/now) (or time 0)) 1500)
             (.then
              (next)
              (fn []
@@ -85,7 +87,7 @@
        (try_handle_button_click env json) (fn [])
        (try_handle_cat_command env json) (fn [])
        (rate_limit_request env json))))
-   (.catch (.error console))
+   (.catch console.error)
    (.then (fn [] (Response. "")))))
 
 (defn json_to_string [x] (.stringify JSON x null 2))
