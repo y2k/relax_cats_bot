@@ -4,7 +4,7 @@ compatibility_date = "2023-10-30"
 node_compat = false
 
 [build]
-command = "~/Projects/language/clj2js/_build/default/bin/main.exe bin/main.clj > ~/Projects/relax_cats_bot/_build/default/bin/main.bc.js"
+command = "clj2js bin/main.clj > ~/Projects/relax_cats_bot/_build/default/bin/main.bc.js"
 watch_dir = ["bin", "lib", "playground"]
 
 [[d1_databases]]

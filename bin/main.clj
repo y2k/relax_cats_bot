@@ -40,9 +40,9 @@
   (if-let [text json?.message?.text
            chat_id json?.message?.chat?.id
            user_id json?.message?.from?.id
-           _ (.startsWith text "/cat")]
+           _ (or (.startsWith text "/cat") (.startsWith text "/dog"))]
     (->
-     (fetch (+ "https://api.giphy.com/v1/gifs/random?rating=pg&api_key=" env.GIPHY_TOKEN "&tag=cat"))
+     (fetch (+ "https://api.giphy.com/v1/gifs/random?rating=pg&api_key=" env.GIPHY_TOKEN "&tag=" (if (.startsWith text "/cat") "cat" "puppy")))
      (.then (fn [r] (.json r)))
      (.then (fn [x]
               (fetch (+ "https://api.telegram.org/bot" env.TG_TOKEN "/sendVideo")
