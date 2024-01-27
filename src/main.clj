@@ -1,6 +1,6 @@
 (def reload_limit 3)
 
-(defn try_handle_button_click [env json next]
+(defn- try_handle_button_click [env json next]
   (if-let [chat_id json?.callback_query?.message?.chat?.id
            message_id json?.callback_query?.message?.message_id
            user_id json?.callback_query?.from?.id
@@ -8,6 +8,7 @@
            payload (.parse JSON data)
            count payload.c
            data_user_id payload.u
+           tag payload.t
            _ (= data_user_id user_id)]
     (if (= count -1)
       (fetch (+ "https://api.telegram.org/bot" env.TG_TOKEN "/editMessageReplyMarkup")
@@ -16,7 +17,7 @@
               :headers {"content-type" "application/json"}})
       (if (<= count reload_limit)
         (->
-         (fetch (+ "https://api.giphy.com/v1/gifs/random?rating=pg&api_key=" env.GIPHY_TOKEN "&tag=cat"))
+         (fetch (+ "https://api.giphy.com/v1/gifs/random?rating=pg&api_key=" env.GIPHY_TOKEN "&tag=" tag))
          (.then (fn [r] (.json r)))
          (.then (fn [x]
                   (let [url (+ "https://api.telegram.org/bot" env.TG_TOKEN "/editMessageMedia")
@@ -25,8 +26,8 @@
                                  :message_id message_id
                                  :reply_markup {:inline_keyboard
                                                 [[{:text (if (= reload_limit count) "Delete" (+ "Next [" (- reload_limit count) "]"))
-                                                   :callback_data (.stringify JSON {:c (+ count 1) :u user_id})}
-                                                  {:text "Done" :callback_data (.stringify JSON {:c -1 :u user_id})}]]}}]
+                                                   :callback_data (.stringify JSON {:c (+ count 1) :u user_id :t tag})}
+                                                  {:text "Done" :callback_data (.stringify JSON {:c -1 :u user_id :t tag})}]]}}]
                     (fetch url {:method "POST"
                                 :body (json_to_string request)
                                 :headers {"content-type" "application/json"}})))))
@@ -36,13 +37,17 @@
                 :headers {"content-type" "application/json"}})))
     (next)))
 
-(defn try_handle_cat_command [env json next]
+(defn- try_handle_cat_command [env json next]
   (if-let [text json?.message?.text
+           tag (if (.startsWith text "/cat") "cat" "puppy")
            chat_id json?.message?.chat?.id
            user_id json?.message?.from?.id
-           _ (or (.startsWith text "/cat") (.startsWith text "/dog"))]
+           tag (cond (.startsWith text "/cat") "cat"
+                     (.startsWith text "/dog") "puppy"
+                     (.startsWith text "/pig") "pig"
+                     :else null)]
     (->
-     (fetch (+ "https://api.giphy.com/v1/gifs/random?rating=pg&api_key=" env.GIPHY_TOKEN "&tag=" (if (.startsWith text "/cat") "cat" "puppy")))
+     (fetch (+ "https://api.giphy.com/v1/gifs/random?rating=pg&api_key=" env.GIPHY_TOKEN "&tag=" tag))
      (.then (fn [r] (.json r)))
      (.then (fn [x]
               (fetch (+ "https://api.telegram.org/bot" env.TG_TOKEN "/sendVideo")
@@ -50,12 +55,12 @@
                       :body (json_to_string {:video x.data.images.original.mp4
                                              :chat_id chat_id
                                              :reply_markup {:inline_keyboard
-                                                            [[{:text (+ "Next [" reload_limit "]") :callback_data (.stringify JSON {:c 1 :u user_id})}
-                                                              {:text "Done" :callback_data (.stringify JSON {:c -1 :u user_id})}]]}})
+                                                            [[{:text (+ "Next [" reload_limit "]") :callback_data (.stringify JSON {:c 1 :u user_id :t tag})}
+                                                              {:text "Done" :callback_data (.stringify JSON {:c -1 :u user_id :t tag})}]]}})
                       :headers {"content-type" "application/json"}}))))
     (next)))
 
-(defn rate_limit_request [env json next]
+(defn- rate_limit_request [env json next]
   (let [user_id (or json?.message?.from?.id json?.callback_query?.from?.id)]
     (if user_id
       (->
@@ -77,7 +82,7 @@
             null))))
       null)))
 
-(defn fetch_handler [request env]
+(defn- fetch_handler [request env]
   (->
    (.json request)
    (.then
@@ -90,5 +95,5 @@
    (.catch console.error)
    (.then (fn [] (Response. "")))))
 
-(defn json_to_string [x] (.stringify JSON x null 2))
+(defn- json_to_string [x] (.stringify JSON x null 2))
 (export-default {:fetch fetch_handler})

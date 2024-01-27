@@ -1,8 +1,0 @@
-(executable
- (flags
-  (:standard -warn-error -A))
- (name main)
- (modes js)
- (libraries relax_cats_bot js_of_ocaml promise_jsoo yojson)
- (preprocess
-  (pps js_of_ocaml-ppx ppx_deriving_yojson)))
