@@ -1,11 +1,11 @@
 name = "relax-cats-bot"
-main = "_build/main.js"
+main = "bin/main.js"
 compatibility_date = "2023-10-30"
 node_compat = false
 
 [build]
-command = "clj2js src/main.clj > _build/main.js"
-watch_dir = ["src"]
+command = "make build"
+watch_dir = ["../src"]
 
 [[d1_databases]]
 binding = "DB"

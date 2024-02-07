@@ -1,0 +1,93 @@
+{
+    "key": "telegram",
+    "data": {
+        "update_id": 569126272,
+        "callback_query": {
+            "id": "1038758115093094788",
+            "from": {
+                "id": 241854720,
+                "is_bot": false,
+                "first_name": "Igor",
+                "username": "angmarr",
+                "language_code": "en"
+            },
+            "message": {
+                "message_id": 868,
+                "from": {
+                    "id": 300777612,
+                    "is_bot": true,
+                    "first_name": "DebugY2k",
+                    "username": "debug3bot"
+                },
+                "chat": {
+                    "id": -1002110559199,
+                    "title": "Declarative offtop",
+                    "username": "xofftop",
+                    "type": "supergroup"
+                },
+                "date": 1707383245,
+                "animation": {
+                    "file_name": "giphy.mp4",
+                    "mime_type": "video/mp4",
+                    "duration": 3,
+                    "width": 480,
+                    "height": 268,
+                    "thumbnail": {
+                        "file_id": "AAMCBAADHQR9zJPfAAIDZGXEmc1n9zdtn3C3E7LzNbHiQJWIAAIXBAACVB-kUy_HWAKjWptOAQAHbQADNAQ",
+                        "file_unique_id": "AQADFwQAAlQfpFNy",
+                        "file_size": 11182,
+                        "width": 320,
+                        "height": 179
+                    },
+                    "thumb": {
+                        "file_id": "AAMCBAADHQR9zJPfAAIDZGXEmc1n9zdtn3C3E7LzNbHiQJWIAAIXBAACVB-kUy_HWAKjWptOAQAHbQADNAQ",
+                        "file_unique_id": "AQADFwQAAlQfpFNy",
+                        "file_size": 11182,
+                        "width": 320,
+                        "height": 179
+                    },
+                    "file_id": "CgACAgQAAx0EfcyT3wACA2RlxJnNZ_c3bZ9wtxOy8zWx4kCViAACFwQAAlQfpFMvx1gCo1qbTjQE",
+                    "file_unique_id": "AgADFwQAAlQfpFM",
+                    "file_size": 221291
+                },
+                "document": {
+                    "file_name": "giphy.mp4",
+                    "mime_type": "video/mp4",
+                    "thumbnail": {
+                        "file_id": "AAMCBAADHQR9zJPfAAIDZGXEmc1n9zdtn3C3E7LzNbHiQJWIAAIXBAACVB-kUy_HWAKjWptOAQAHbQADNAQ",
+                        "file_unique_id": "AQADFwQAAlQfpFNy",
+                        "file_size": 11182,
+                        "width": 320,
+                        "height": 179
+                    },
+                    "thumb": {
+                        "file_id": "AAMCBAADHQR9zJPfAAIDZGXEmc1n9zdtn3C3E7LzNbHiQJWIAAIXBAACVB-kUy_HWAKjWptOAQAHbQADNAQ",
+                        "file_unique_id": "AQADFwQAAlQfpFNy",
+                        "file_size": 11182,
+                        "width": 320,
+                        "height": 179
+                    },
+                    "file_id": "CgACAgQAAx0EfcyT3wACA2RlxJnNZ_c3bZ9wtxOy8zWx4kCViAACFwQAAlQfpFMvx1gCo1qbTjQE",
+                    "file_unique_id": "AgADFwQAAlQfpFM",
+                    "file_size": 221291
+                },
+                "reply_markup": {
+                    "inline_keyboard": [
+                        [
+                            {
+                                "text": "Next [3]",
+                                "callback_data": "{\"c\":1,\"u\":241854720,\"t\":\"cat\"}"
+                            },
+                            {
+                                "text": "Done",
+                                "callback_data": "{\"c\":-1,\"u\":241854720,\"t\":\"cat\"}"
+                            }
+                        ]
+                    ]
+                }
+            },
+            "chat_instance": "784336264286876233",
+            "data": "{\"c\":1,\"u\":241854720,\"t\":\"cat\"}"
+        }
+    }
+}

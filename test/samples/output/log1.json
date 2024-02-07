@@ -1,0 +1,21 @@
+[
+    {
+        "key": "fetch",
+        "data": [
+            "https://api.giphy.com/v1/gifs/random?rating=pg&api_key=~GIPHY_TOKEN~&tag=cat",
+            {}
+        ]
+    },
+    {
+        "key": "dispatch",
+        "data": [
+            "try_handle_cat_command_send",
+            [
+                241854720,
+                241854720,
+                "cat",
+                null
+            ]
+        ]
+    }
+]

@@ -1,0 +1,15 @@
+[
+    {
+        "key": "fetch",
+        "data": [
+            "https://api.telegram.org/bot~TG_TOKEN~/sendVideo",
+            {
+                "method": "POST",
+                "body": "{\"video\":\"https://media3.giphy.com/media/fdL7MOVTbYaaY/giphy.mp4?cid=f1dc8cf8l6v7r5jk5gxueqga7scy87hmjifted3vhv2a15v8&ep=v1_gifs_random&rid=giphy.mp4&ct=g\",\"chat_id\":-1002110559199,\"reply_markup\":{\"inline_keyboard\":[[{\"text\":\"Next [3]\",\"callback_data\":\"{\\\"c\\\":1,\\\"u\\\":241854720,\\\"t\\\":\\\"cat\\\"}\"},{\"text\":\"Done\",\"callback_data\":\"{\\\"c\\\":-1,\\\"u\\\":241854720,\\\"t\\\":\\\"cat\\\"}\"}]]}}",
+                "headers": {
+                    "content-type": "application/json"
+                }
+            }
+        ]
+    }
+]
