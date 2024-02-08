@@ -1,0 +1,43 @@
+{
+    "key": "telegram",
+    "data": {
+        "update_id": 569126276,
+        "message": {
+            "message_id": 869,
+            "from": {
+                "id": 241854720,
+                "is_bot": false,
+                "first_name": "Igor",
+                "username": "angmarr",
+                "language_code": "en"
+            },
+            "chat": {
+                "id": -1002110559199,
+                "title": "Declarative offtop",
+                "username": "xofftop",
+                "type": "supergroup"
+            },
+            "date": 1707399621,
+            "new_chat_participant": {
+                "id": 361975238,
+                "is_bot": true,
+                "first_name": "Try Kotlin",
+                "username": "tryktbot"
+            },
+            "new_chat_member": {
+                "id": 361975238,
+                "is_bot": true,
+                "first_name": "Try Kotlin",
+                "username": "tryktbot"
+            },
+            "new_chat_members": [
+                {
+                    "id": 361975238,
+                    "is_bot": true,
+                    "first_name": "Try Kotlin",
+                    "username": "tryktbot"
+                }
+            ]
+        }
+    }
+}

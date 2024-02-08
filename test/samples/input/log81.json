@@ -1,0 +1,35 @@
+{
+    "key": "raw_telegram",
+    "data": {
+        "update": {
+            "update_id": 569126342,
+            "message": {
+                "message_id": 934,
+                "from": {
+                    "id": 241854720,
+                    "is_bot": false,
+                    "first_name": "Igor",
+                    "username": "angmarr",
+                    "language_code": "en"
+                },
+                "chat": {
+                    "id": -1002110559199,
+                    "title": "Declarative offtop",
+                    "username": "xofftop",
+                    "type": "supergroup"
+                },
+                "date": 1707432431,
+                "text": "/cat",
+                "entities": [
+                    {
+                        "offset": 0,
+                        "length": 4,
+                        "type": "bot_command"
+                    }
+                ]
+            }
+        },
+        "now": 1707432431737,
+        "db": {}
+    }
+}

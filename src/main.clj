@@ -2,6 +2,7 @@
 
 (defn- eff_fetch    [url props] (e/call :fetch    [url props]))
 (defn- eff_dispatch [key data]  (e/call :dispatch [key data]))
+(defn- eff_db       [db]        (e/call :db       db))
 
 (def RELOAD_LIMIT 3)
 
@@ -69,49 +70,59 @@
      (e/then (fn [json] (eff_dispatch :try_handle_cat_command_send [chat_id user_id tag json]))))
     (e/pure null)))
 
+(defn- try_handle_new_user_end [chat_id message_id username img_json cas_json]
+  (eff_fetch
+   "https://api.telegram.org/bot~TG_TOKEN~/sendVideo"
+   {:method "POST"
+    :body (JSON/stringify {:video img_json.data.images.original.mp4
+                           :chat_id chat_id
+                           :caption
+                           (if cas_json.ok
+                             (str "Админ, забань @" username " - он точно спамер!!!")
+                             (str "@" username ", докажите что вы человек.\nНапишите что происходит на картинке. У вас 30 секунд 😸"))})
+    :headers {"content-type" "application/json"}}))
+
+(defn- try_handle_new_user [json]
+  (if-let [username json?.message?.new_chat_member?.username
+           message_id json?.message?.message_id
+           chat_id json?.message?.chat?.id
+           user_id json?.message?.new_chat_member?.id]
+    (->
+     (e/batch [(eff_fetch "https://api.giphy.com/v1/gifs/random?rating=pg&api_key=~GIPHY_TOKEN~&tag=cat" {})
+               (eff_fetch (str "https://api.cas.chat/check?user_id=" user_id) {})])
+     (e/then (fn [r] (eff_dispatch :try_handle_new_user_end [chat_id message_id username (get r 0) (get r 1)]))))
+    (e/pure null)))
+
+(defn- handle_rate_limit [data]
+  (if-let [user_id (or data?.update?.message?.from?.id data?.update?.callback_query?.from?.id)
+           _ (> (- data.now (or (get data.db user_id) 0)) 1500)]
+    (e/batch [(eff_db (assoc data.db user_id data.now))
+              (eff_dispatch :telegram data.update)])
+    (e/pure null)))
+
 (defn handle_event [key data]
   ;; (println (JSON/stringify {:key key :data data} null 2))
   (case key
+    :raw_telegram (handle_rate_limit data)
     :telegram (e/batch [(try_handle_cat_command data)
-                        (try_handle_button_click data)])
+                        (try_handle_button_click data)
+                        (try_handle_new_user data)])
     :try_handle_cat_command_send (try_handle_cat_command_send (spread data))
     :try_handle_button_click_image (try_handle_button_click_image (spread data))
+    :try_handle_new_user_end (try_handle_new_user_end (spread data))
     (e/pure null)))
 
-;; (defn- rate_limit_request [env json next]
-;;   (let [user_id (or json?.message?.from?.id json?.callback_query?.from?.id)]
-;;     (if user_id
-;;       (->
-;;        (.prepare env.DB "SELECT time FROM last_request_time WHERE user_id = ?1")
-;;        (.bind user_id)
-;;        (.first "time")
-;;        (.then
-;;         (fn [time]
-;;           (if (> (- (Date/now) (or time 0)) 1500)
-;;             (->
-;;              (Promise/resolve)
-;;              (.then next)
-;;              (.then
-;;               (fn []
-;;                 (->
-;;                  (.prepare env.DB "INSERT OR REPLACE INTO last_request_time (user_id, time) VALUES (?1, ?2)")
-;;                  (.bind user_id (Date/now))
-;;                  (.run)))))
-;;             null))))
-;;       null)))
+;; Prelude Begin
 
-;; (defn- fetch_handler [request env]
-;;   (->
-;;    (.json request)
-;;    (.then
-;;     (fn [json]
-;;       (->>
-;;        (.log console "[LOG] Message not handled:\n" json) (fn [])
-;;        (try_handle_button_click env json) (fn [])
-;;        (try_handle_cat_command env json) (fn [])
-;;        (rate_limit_request env json))))
-;;    (.catch console.error)
-;;    (.then (fn [] (Response. "")))))
+(defn atom [x] (Array/of x))
+(defn reset [a x]
+  (.pop a)
+  (.push a x))
+(defn deref [a] (get a 0))
+
+;; Prelude End
+
+(def GLOBAL_REQUEST_TIMES (atom {}))
 
 (export-default
  {:fetch
@@ -123,11 +134,9 @@
                            env
                            e/attach_empty_effect_handler
                            (e/attach_eff :db
-                                         (fn [args]
-                                           (let [sql (.at args 0) sql_args (.at args 1)]
-                                             (->
-                                              env.DB (.prepare sql) (.bind (spread sql_args)) .run
-                                              (.then (fn [x] x.results))))))
+                                         (fn [db]
+                                           (reset GLOBAL_REQUEST_TIMES db)
+                                           (Promise/resolve null)))
                            (e/attach_eff :fetch
                                          (fn [args]
                                            (let [url (.at args 0) props (.at args 1)]
@@ -140,6 +149,8 @@
                                          (fn [args]
                                            (let [key (.at args 0) data (.at args 1)]
                                              (e/run_effect (handle_event key data) world)))))]
-                (e/run_effect (handle_event :telegram update) world))))
+                (e/run_effect (handle_event :raw_telegram {:update update
+                                                           :now (Date/now)
+                                                           :db (deref GLOBAL_REQUEST_TIMES)}) world))))
      (.catch console.error)
      (.then (fn [] (Response. (str "OK - " (Date.)))))))})

@@ -1,0 +1,15 @@
+[
+    {
+        "key": "fetch",
+        "data": [
+            "https://api.telegram.org/bot~TG_TOKEN~/sendVideo",
+            {
+                "method": "POST",
+                "body": "{\"video\":\"https://media3.giphy.com/media/f8ywYgttpGzzVPH5AO/giphy.mp4?cid=f1dc8cf80frqji1thc0vhpsfiryne5f41prt4v1ipxcjdbrl&ep=v1_gifs_random&rid=giphy.mp4&ct=g\",\"chat_id\":-1002110559199,\"caption\":\"Админ, забань @spectator_preview_bot - он точно спамер!!!\"}",
+                "headers": {
+                    "content-type": "application/json"
+                }
+            }
+        ]
+    }
+]

@@ -1,4 +1,4 @@
-run: test hook
+run: hook
 	wrangler dev
 
 test: build

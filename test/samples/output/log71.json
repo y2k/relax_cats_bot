@@ -1,0 +1,29 @@
+[
+    {
+        "key": "fetch",
+        "data": [
+            "https://api.giphy.com/v1/gifs/random?rating=pg&api_key=~GIPHY_TOKEN~&tag=cat",
+            {}
+        ]
+    },
+    {
+        "key": "fetch",
+        "data": [
+            "https://api.cas.chat/check?user_id=361975238",
+            {}
+        ]
+    },
+    {
+        "key": "dispatch",
+        "data": [
+            "try_handle_new_user_end",
+            [
+                -1002110559199,
+                869,
+                "tryktbot",
+                null,
+                null
+            ]
+        ]
+    }
+]
