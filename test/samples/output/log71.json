@@ -20,7 +20,10 @@
             [
                 -1002110559199,
                 869,
-                "tryktbot",
+                {
+                    "name": "Try Kotlin",
+                    "id": 361975238
+                },
                 null,
                 null
             ]

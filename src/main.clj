@@ -70,27 +70,30 @@
      (e/then (fn [json] (eff_dispatch :try_handle_cat_command_send [chat_id user_id tag json]))))
     (e/pure null)))
 
-(defn- try_handle_new_user_end [chat_id message_id username img_json cas_json]
+(defn- try_handle_new_user_end [chat_id message_id user img_json cas_json]
   (eff_fetch
    "https://api.telegram.org/bot~TG_TOKEN~/sendVideo"
    {:method "POST"
     :body (JSON/stringify {:video img_json.data.images.original.mp4
                            :chat_id chat_id
+                           :parse_mode :MarkdownV2
                            :caption
-                           (if cas_json.ok
-                             (str "Админ, забань @" username " - он точно спамер!!!")
-                             (str "@" username ", докажите что вы человек.\nНапишите что происходит на картинке. У вас 30 секунд 😸"))})
+                           (let [username (str "[" user.name "](tg://user?id=" user.id ")")]
+                             (if cas_json.ok
+                               (str "Админ, забань " username " - он точно спамер!!! [Пруф](https://cas.chat/query?u=" user.id ")")
+                               (str username ", докажите что вы человек\nНапишите что происходит на картинке, у вас 30 секунд 😸")))})
     :headers {"content-type" "application/json"}}))
 
 (defn- try_handle_new_user [json]
-  (if-let [username json?.message?.new_chat_member?.username
+  (if-let [user_id json?.message?.new_chat_member?.id
+           user {:name json?.message?.new_chat_member?.first_name
+                 :id user_id}
            message_id json?.message?.message_id
-           chat_id json?.message?.chat?.id
-           user_id json?.message?.new_chat_member?.id]
+           chat_id json?.message?.chat?.id]
     (->
      (e/batch [(eff_fetch "https://api.giphy.com/v1/gifs/random?rating=pg&api_key=~GIPHY_TOKEN~&tag=cat" {})
                (eff_fetch (str "https://api.cas.chat/check?user_id=" user_id) {})])
-     (e/then (fn [r] (eff_dispatch :try_handle_new_user_end [chat_id message_id username (get r 0) (get r 1)]))))
+     (e/then (fn [r] (eff_dispatch :try_handle_new_user_end [chat_id message_id user (get r 0) (get r 1)]))))
     (e/pure null)))
 
 (defn- handle_rate_limit [data]
@@ -144,7 +147,8 @@
                                                  (.replaceAll "~TG_TOKEN~" env.TG_TOKEN)
                                                  (.replaceAll "~GIPHY_TOKEN~" env.GIPHY_TOKEN)
                                                  (fetch props)
-                                                 (.then (fn [x] (.json x)))))))
+                                                 (.then (fn [x] (.json x)))
+                                                 (.then (fn [r] (println "FETCH: " r) r))))))
                            (e/attach_eff :dispatch
                                          (fn [args]
                                            (let [key (.at args 0) data (.at args 1)]

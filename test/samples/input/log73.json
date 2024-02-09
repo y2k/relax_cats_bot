@@ -3,7 +3,10 @@
     "data": [
         -1002110559199,
         870,
-        "spectator_preview_bot",
+        {
+            "name": "Spectator",
+            "id": 501246145
+        },
         {
             "data": {
                 "type": "gif",
