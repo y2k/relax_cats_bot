@@ -19,6 +19,13 @@
        (fn [r] (let [r2 (f r)]
                  (r2 env)))))))
 
+(defn seq [fx fx2]
+  (fn [env]
+    (let [pr (fx env)]
+      (.then
+       pr
+       (fn [r1] (.then (fx2 env) (fn [r2] [r1 r2])))))))
+
 (defn attach_empty_effect_handler [world]
   (assoc
    world :perform

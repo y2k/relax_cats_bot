@@ -3,6 +3,8 @@
 (defn- eff_fetch    [url props] (e/call :fetch    [url props]))
 (defn- eff_dispatch [key data]  (e/call :dispatch [key data]))
 (defn- eff_db       [db]        (e/call :db       db))
+(defn- eff_fork     [fx]        (e/call :fork     fx))
+(defn- eff_sleep    [timeout]   (e/call :sleep    timeout))
 
 (def RELOAD_LIMIT 3)
 
@@ -70,19 +72,32 @@
      (e/then (fn [json] (eff_dispatch :try_handle_cat_command_send [chat_id user_id tag json]))))
     (e/pure null)))
 
+(defn- delete_message_welcome_message [json]
+  (if-let [chat_id json?.result?.chat?.id
+           message_id json?.result?.message_id]
+    (eff_fork
+     (e/seq (eff_sleep 30)
+            (eff_fetch "https://api.telegram.org/bot~TG_TOKEN~/deleteMessage"
+                       {:method "POST"
+                        :body (JSON/stringify {:chat_id chat_id :message_id message_id})
+                        :headers {"content-type" "application/json"}})))
+    (e/pure null)))
+
 (defn- try_handle_new_user_end [chat_id message_id user img_json cas_json]
-  (eff_fetch
-   "https://api.telegram.org/bot~TG_TOKEN~/sendVideo"
-   {:method "POST"
-    :body (JSON/stringify {:video img_json.data.images.original.mp4
-                           :chat_id chat_id
-                           :parse_mode :MarkdownV2
-                           :caption
-                           (let [username (str "[" user.name "](tg://user?id=" user.id ")")]
-                             (if cas_json.ok
-                               (str "Админ, забань " username " - он точно спамер!!! [Пруф](https://cas.chat/query?u=" user.id ")")
-                               (str username ", докажите что вы человек\nНапишите что происходит на картинке, у вас 30 секунд 😸")))})
-    :headers {"content-type" "application/json"}}))
+  (->
+   (eff_fetch
+    "https://api.telegram.org/bot~TG_TOKEN~/sendVideo"
+    {:method "POST"
+     :body (JSON/stringify {:video img_json.data.images.original.mp4
+                            :chat_id chat_id
+                            :parse_mode :MarkdownV2
+                            :caption
+                            (let [username (str "[" user.name "](tg://user?id=" user.id ")")]
+                              (if cas_json.ok
+                                (str "Админ, забань " username " - он точно спамер!!! [Пруф](https://cas.chat/query?u=" user.id ")")
+                                (str username ", докажите что вы человек\nНапишите что происходит на картинке, у вас 30 секунд 😸")))})
+     :headers {"content-type" "application/json"}})
+   (e/then (fn [r] (eff_dispatch :welcome_screen_sended [r])))))
 
 (defn- try_handle_new_user [json]
   (if-let [user_id json?.message?.new_chat_member?.id
@@ -91,16 +106,16 @@
            message_id json?.message?.message_id
            chat_id json?.message?.chat?.id]
     (->
-     (e/batch [(eff_fetch "https://api.giphy.com/v1/gifs/random?rating=pg&api_key=~GIPHY_TOKEN~&tag=cat" {})
-               (eff_fetch (str "https://api.cas.chat/check?user_id=" user_id) {})])
+     (e/seq (eff_fetch "https://api.giphy.com/v1/gifs/random?rating=pg&api_key=~GIPHY_TOKEN~&tag=cat" {})
+            (eff_fetch (str "https://api.cas.chat/check?user_id=" user_id) {}))
      (e/then (fn [r] (eff_dispatch :try_handle_new_user_end [chat_id message_id user (get r 0) (get r 1)]))))
     (e/pure null)))
 
 (defn- handle_rate_limit [data]
   (if-let [user_id (or data?.update?.message?.from?.id data?.update?.callback_query?.from?.id)
            _ (> (- data.now (or (get data.db user_id) 0)) 1500)]
-    (e/batch [(eff_db (assoc data.db user_id data.now))
-              (eff_dispatch :telegram data.update)])
+    (e/seq (eff_db (assoc data.db user_id data.now))
+           (eff_dispatch :telegram data.update))
     (e/pure null)))
 
 (defn handle_event [key data]
@@ -110,6 +125,7 @@
     :telegram (e/batch [(try_handle_cat_command data)
                         (try_handle_button_click data)
                         (try_handle_new_user data)])
+    :welcome_screen_sended (delete_message_welcome_message (spread data))
     :try_handle_cat_command_send (try_handle_cat_command_send (spread data))
     :try_handle_button_click_image (try_handle_button_click_image (spread data))
     :try_handle_new_user_end (try_handle_new_user_end (spread data))
@@ -136,6 +152,13 @@
               (let [world (->
                            env
                            e/attach_empty_effect_handler
+                           (e/attach_eff :sleep
+                                         (fn [timeout]
+                                           (Promise. (fn [resolve] (setTimeout resolve (* 1000 timeout))))))
+                           (e/attach_eff :fork
+                                         (fn [fx]
+                                           (.waitUntil ctx (fx world))
+                                           (Promise/resolve null)))
                            (e/attach_eff :db
                                          (fn [db]
                                            (reset GLOBAL_REQUEST_TIMES db)

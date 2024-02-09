@@ -1,0 +1,83 @@
+{
+    "key": "welcome_screen_sended",
+    "data": [
+        {
+            "ok": true,
+            "result": {
+                "message_id": 998,
+                "from": {
+                    "id": 300777612,
+                    "is_bot": true,
+                    "first_name": "DebugY2k",
+                    "username": "debug3bot"
+                },
+                "chat": {
+                    "id": -1002110559199,
+                    "title": "Declarative offtop",
+                    "username": "xofftop",
+                    "type": "supergroup"
+                },
+                "date": 1707498553,
+                "animation": {
+                    "file_name": "giphy.mp4",
+                    "mime_type": "video/mp4",
+                    "duration": 8,
+                    "width": 480,
+                    "height": 270,
+                    "thumbnail": {
+                        "file_id": "AAMCBAADHQR9zJPfAAID5mXGXDkGUPx4wN6iNOQsY356NRCUAAILBAAC4PvdU-aogB41EHDdAQAHbQADNAQ",
+                        "file_unique_id": "AQADCwQAAuD73VNy",
+                        "file_size": 13680,
+                        "width": 320,
+                        "height": 180
+                    },
+                    "thumb": {
+                        "file_id": "AAMCBAADHQR9zJPfAAID5mXGXDkGUPx4wN6iNOQsY356NRCUAAILBAAC4PvdU-aogB41EHDdAQAHbQADNAQ",
+                        "file_unique_id": "AQADCwQAAuD73VNy",
+                        "file_size": 13680,
+                        "width": 320,
+                        "height": 180
+                    },
+                    "file_id": "CgACAgQAAx0EfcyT3wACA-Zlxlw5BlD8eMDeojTkLGN-ejUQlAACCwQAAuD73VPmqIAeNRBw3TQE",
+                    "file_unique_id": "AgADCwQAAuD73VM",
+                    "file_size": 1097755
+                },
+                "document": {
+                    "file_name": "giphy.mp4",
+                    "mime_type": "video/mp4",
+                    "thumbnail": {
+                        "file_id": "AAMCBAADHQR9zJPfAAID5mXGXDkGUPx4wN6iNOQsY356NRCUAAILBAAC4PvdU-aogB41EHDdAQAHbQADNAQ",
+                        "file_unique_id": "AQADCwQAAuD73VNy",
+                        "file_size": 13680,
+                        "width": 320,
+                        "height": 180
+                    },
+                    "thumb": {
+                        "file_id": "AAMCBAADHQR9zJPfAAID5mXGXDkGUPx4wN6iNOQsY356NRCUAAILBAAC4PvdU-aogB41EHDdAQAHbQADNAQ",
+                        "file_unique_id": "AQADCwQAAuD73VNy",
+                        "file_size": 13680,
+                        "width": 320,
+                        "height": 180
+                    },
+                    "file_id": "CgACAgQAAx0EfcyT3wACA-Zlxlw5BlD8eMDeojTkLGN-ejUQlAACCwQAAuD73VPmqIAeNRBw3TQE",
+                    "file_unique_id": "AgADCwQAAuD73VM",
+                    "file_size": 1097755
+                },
+                "caption": "Spectator, докажите что вы человек\nНапишите что происходит на картинке, у вас 30 секунд 😸",
+                "caption_entities": [
+                    {
+                        "offset": 0,
+                        "length": 9,
+                        "type": "text_mention",
+                        "user": {
+                            "id": 501246145,
+                            "is_bot": true,
+                            "first_name": "Spectator",
+                            "username": "spectator_preview_bot"
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}
