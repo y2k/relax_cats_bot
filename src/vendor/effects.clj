@@ -26,6 +26,17 @@
        pr
        (fn [r1] (.then (fx2 env) (fn [r2] [r1 r2])))))))
 
+;;
+
+(defn dispatch [key data]  (call :dispatch [key data]))
+(defn fork     [fx]        (call :fork     fx))
+(defn sleep    [timeout]   (call :sleep    timeout))
+
+(defn broadcast [key fx f]
+  (then fx (fn [json] (dispatch key (f json)))))
+
+;;
+
 (defn attach_empty_effect_handler [world]
   (assoc
    world :perform
