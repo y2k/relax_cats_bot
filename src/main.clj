@@ -81,22 +81,19 @@
     (e/pure null)))
 
 (defn- try_handle_new_user_end [chat_id message_id user img_json cas_json]
-  (let [video_fx (eff_fetch
-                  "https://api.telegram.org/bot~TG_TOKEN~/sendVideo"
-                  {:method "POST"
-                   :body (JSON/stringify
-                          {:video img_json.data.images.original.mp4
-                           :chat_id chat_id
-                           :parse_mode :MarkdownV2
-                           :caption
-                           (let [username (str "[" user.name "](tg://user?id=" user.id ")")]
-                             (if cas_json.ok
-                               (str "Админ, забань " username " - он точно спамер!!! [Пруф](https://cas.chat/query?u=" user.id ")")
-                               (str username ", докажите что вы человек\nНапишите что происходит на картинке, у вас 30 секунд 😸")))})
-                   :headers {"content-type" "application/json"}})]
-    (if cas_json.ok
-      video_fx
-      (e/broadcast :welcome_screen_sended video_fx (fn [r] [r])))))
+  (if cas_json.ok
+    (eff_fetch
+     "https://api.telegram.org/bot~TG_TOKEN~/sendVideo"
+     {:method "POST"
+      :body (JSON/stringify
+             {:video img_json.data.images.original.mp4
+              :chat_id chat_id
+              :parse_mode :MarkdownV2
+              :caption
+              (let [username (str "[" user.name "](tg://user?id=" user.id ")")]
+                (str "Админ, забань " username " - он точно спамер!!! [Пруф](https://cas.chat/query?u=" user.id ")"))})
+      :headers {"content-type" "application/json"}})
+    (e/pure null)))
 
 (defn- try_handle_new_user [json]
   (if-let [user_id json?.message?.new_chat_member?.id
