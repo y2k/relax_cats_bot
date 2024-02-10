@@ -107,7 +107,7 @@
     (e/broadcast :try_handle_new_user_end
                  (e/seq (eff_fetch "https://api.giphy.com/v1/gifs/random?rating=pg&api_key=~GIPHY_TOKEN~&tag=cat" {})
                         (eff_fetch (str "https://api.cas.chat/check?user_id=" user_id) {}))
-                 (fn [r] [chat_id message_id user (get r 0) (get r 1)]))
+                 (fn [[cat_json cas_json]] [chat_id message_id user cat_json cas_json]))
     (e/pure null)))
 
 (defn- handle_rate_limit [data]
@@ -163,18 +163,16 @@
                                            (reset GLOBAL_REQUEST_TIMES db)
                                            (Promise/resolve null)))
                            (e/attach_eff :fetch
-                                         (fn [args]
-                                           (let [url (.at args 0) props (.at args 1)]
-                                             (-> url
-                                                 (.replaceAll "~TG_TOKEN~" env.TG_TOKEN)
-                                                 (.replaceAll "~GIPHY_TOKEN~" env.GIPHY_TOKEN)
-                                                 (fetch props)
-                                                 (.then (fn [x] (.json x)))
-                                                 (.then (fn [r] (println "FETCH: " r) r))))))
+                                         (fn [[url props]]
+                                           (-> url
+                                               (.replaceAll "~TG_TOKEN~" env.TG_TOKEN)
+                                               (.replaceAll "~GIPHY_TOKEN~" env.GIPHY_TOKEN)
+                                               (fetch props)
+                                               (.then (fn [x] (.json x)))
+                                               (.then (fn [r] (println "FETCH: " r) r)))))
                            (e/attach_eff :dispatch
-                                         (fn [args]
-                                           (let [key (.at args 0) data (.at args 1)]
-                                             (e/run_effect (handle_event key data) world)))))]
+                                         (fn [[key data]]
+                                           (e/run_effect (handle_event key data) world))))]
                 (e/run_effect (handle_event :raw_telegram {:update update
                                                            :now (Date/now)
                                                            :db (deref GLOBAL_REQUEST_TIMES)}) world))))
