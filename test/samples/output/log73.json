@@ -16,14 +16,5 @@
                 }
             }
         ]
-    },
-    {
-        "key": "dispatch",
-        "data": [
-            "welcome_screen_sended",
-            [
-                null
-            ]
-        ]
     }
 ]
