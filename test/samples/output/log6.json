@@ -5,7 +5,10 @@
             "https://api.telegram.org/bot~TG_TOKEN~/deleteMessage",
             {
                 "method": "POST",
-                "body": "{\"chat_id\":-1002110559199,\"message_id\":868}",
+                "body": {
+                    "chat_id": -1002110559199,
+                    "message_id": 868
+                },
                 "headers": {
                     "content-type": "application/json"
                 }

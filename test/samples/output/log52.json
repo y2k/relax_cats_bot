@@ -5,7 +5,36 @@
             "https://api.telegram.org/bot~TG_TOKEN~/editMessageMedia",
             {
                 "method": "POST",
-                "body": "{\"media\":{\"type\":\"video\",\"media\":\"https://media4.giphy.com/media/3sLiXWTj8WXNC/giphy.mp4?cid=f1dc8cf8bg2zwf2d60u1qd1xo59rn6wjqrhrpluuip8pz2pa&ep=v1_gifs_random&rid=giphy.mp4&ct=g\"},\"chat_id\":-1002110559199,\"message_id\":868,\"reply_markup\":{\"inline_keyboard\":[[{\"text\":\"Delete\",\"callback_data\":\"{\\\"c\\\":4,\\\"u\\\":241854720,\\\"t\\\":\\\"cat\\\"}\"},{\"text\":\"Done\",\"callback_data\":\"{\\\"c\\\":-1,\\\"u\\\":241854720,\\\"t\\\":\\\"cat\\\"}\"}]]}}",
+                "body": {
+                    "media": {
+                        "type": "video",
+                        "media": "https://media4.giphy.com/media/3sLiXWTj8WXNC/giphy.mp4?cid=f1dc8cf8bg2zwf2d60u1qd1xo59rn6wjqrhrpluuip8pz2pa&ep=v1_gifs_random&rid=giphy.mp4&ct=g"
+                    },
+                    "chat_id": -1002110559199,
+                    "message_id": 868,
+                    "reply_markup": {
+                        "inline_keyboard": [
+                            [
+                                {
+                                    "text": "Delete",
+                                    "callback_data": {
+                                        "c": 4,
+                                        "u": 241854720,
+                                        "t": "cat"
+                                    }
+                                },
+                                {
+                                    "text": "Done",
+                                    "callback_data": {
+                                        "c": -1,
+                                        "u": 241854720,
+                                        "t": "cat"
+                                    }
+                                }
+                            ]
+                        ]
+                    }
+                },
                 "headers": {
                     "content-type": "application/json"
                 }
