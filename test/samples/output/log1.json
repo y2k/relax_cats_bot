@@ -14,7 +14,13 @@
                 241854720,
                 241854720,
                 "cat",
-                null
+                [
+                    "fetch",
+                    [
+                        "https://api.giphy.com/v1/gifs/random?rating=pg&api_key=~GIPHY_TOKEN~&tag=cat",
+                        {}
+                    ]
+                ]
             ]
         ]
     }

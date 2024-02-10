@@ -28,13 +28,15 @@
               (if (= :fork name)
                 (args {:perform test_eff_handler})
                 (if (> log.length 0)
-                  (let [x (.pop log)]
-                    (if (= (JSON/stringify [x.key x.data]) (JSON/stringify (rec_parse [name args])))
-                      (Promise/resolve x.out)
-                      (FIXME "Log: " (.replace path "/input/" "/output/") "\n" (rec_stringify [x.key x.data]) "\n<>\n" (rec_stringify [name args]) "\n")))
+                  (let [x (.pop log)
+                        expected (JSON/stringify [x.key x.data])
+                        actual (JSON/stringify (rec_parse [name args]))]
+                    (if (= expected actual)
+                      (Promise/resolve [name args])
+                      (FIXME "Log: " (.replace path "/input/" "/output/") "\n" expected "\n<>\n" actual "\n")))
                   (do
                     (.push fx_log {:key name :data args})
-                    (Promise/resolve null)))))
+                    (Promise/resolve [name args])))))
             (->
              (app/handle_event event.key event.data)
              (e/run_effect {:perform test_eff_handler})

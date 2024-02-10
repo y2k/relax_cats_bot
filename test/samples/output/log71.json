@@ -24,8 +24,20 @@
                     "name": "Try Kotlin",
                     "id": 361975238
                 },
-                null,
-                null
+                [
+                    "fetch",
+                    [
+                        "https://api.giphy.com/v1/gifs/random?rating=pg&api_key=~GIPHY_TOKEN~&tag=cat",
+                        {}
+                    ]
+                ],
+                [
+                    "fetch",
+                    [
+                        "https://api.cas.chat/check?user_id=361975238",
+                        {}
+                    ]
+                ]
             ]
         ]
     }
