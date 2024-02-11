@@ -2,12 +2,19 @@ run: hook
 	wrangler dev
 
 test: build
-	clear && clj2js ../src/vendor/effects.clj > bin/vendor/effects.js && \
-	clear && clj2js ../test/test.clj > bin/test.js && \
-	clear && node --env-file=.dev.vars bin/test.js
+	@ echo '{"type": "module"}' > bin/package.json
+	@ clear && clj2js js ../test/test.clj ../vendor/prelude/js/src/prelude.clj > bin/test.js
+	@ clear && node --env-file=.dev.vars bin/test.js
 
 build:
-	clj2js ../src/main.clj > bin/main.js
+	@ mkdir -p bin/vendor
+	@ cp ../vendor/prelude/js/src/prelude.js bin/prelude.js
+	@ cp ../vendor/prelude/js/src/prelude.js bin/vendor/prelude.js
+	@ clear && clj2js js ../vendor/effects/src/effects.clj ../vendor/prelude/js/src/prelude.clj > bin/vendor/effects.js
+	@ clear && clj2js js ../src/main.clj ../vendor/prelude/js/src/prelude.clj > bin/main.js
+
+clean:
+	@ rm -rf bin
 
 hook:
 	@NGROK_API="http://localhost:4040/api/tunnels" ; \
@@ -18,4 +25,4 @@ hook:
 db:
 	wrangler d1 execute LAST_REQUEST_TIME_D1 --local --file=schema.sql
 
-.PHONY: run test build hook db
+.PHONY: run test build clean hook db

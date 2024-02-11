@@ -1,6 +1,6 @@
-(import [fs.promises :as fs])
-(require [vendor.effects :as e]
-         [main :as app])
+(ns _ (:require [vendor.effects :as e]
+                [main :as app]
+                [js.fs.promises :as fs]))
 
 (defn- rec_parse [x]
   (cond

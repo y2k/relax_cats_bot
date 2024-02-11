@@ -1,4 +1,4 @@
-(require [vendor.effects :as e])
+(ns _ (:require [vendor.effects :as e]))
 
 (defn- eff_fetch [url props] (e/call :fetch [url props]))
 (defn- eff_db    [db]        (e/call :db    db))
@@ -126,16 +126,6 @@
     :try_handle_button_click_image (try_handle_button_click_image (spread data))
     :try_handle_new_user_end (try_handle_new_user_end (spread data))
     (e/pure null)))
-
-;; Prelude Begin
-
-(defn atom [x] (Array/of x))
-(defn reset [a x]
-  (.pop a)
-  (.push a x))
-(defn deref [a] (get a 0))
-
-;; Prelude End
 
 (def GLOBAL_REQUEST_TIMES (atom {}))
 
