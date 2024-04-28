@@ -1,17 +1,17 @@
+PRELUDE_PATH := $(shell realpath ../vendor/prelude/js/src/prelude.clj)
+
 run: hook
 	wrangler dev
 
 test: build
 	@ echo '{"type": "module"}' > bin/package.json
-	@ clear && clj2js js ../test/test.clj ../vendor/prelude/js/src/prelude.clj > bin/test.js
-	@ clear && node --env-file=.dev.vars bin/test.js
+	@ clear && clj2js js ../test/test.clj $(PRELUDE_PATH) > bin/test/test.js
+	@ clear && node --env-file=.dev.vars bin/test/test.js
 
 build:
-	@ mkdir -p bin/vendor
-	@ cp ../vendor/prelude/js/src/prelude.js bin/prelude.js
-	@ cp ../vendor/prelude/js/src/prelude.js bin/vendor/prelude.js
-	@ clear && clj2js js ../vendor/effects/src/effects.clj ../vendor/prelude/js/src/prelude.clj > bin/vendor/effects.js
-	@ clear && clj2js js ../src/main.clj ../vendor/prelude/js/src/prelude.clj > bin/main.js
+	@ mkdir -p bin/src && mkdir -p bin/test && mkdir -p bin/vendor/packages/effects
+	@ clear && clj2js js ../vendor/packages/effects/effects.2.clj $(PRELUDE_PATH) > bin/vendor/packages/effects/effects.2.js
+	@ clear && clj2js js ../src/main.clj $(PRELUDE_PATH) > bin/src/main.js
 
 clean:
 	@ rm -rf bin

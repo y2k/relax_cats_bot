@@ -1,9 +1,9 @@
 [
     {
         "key": "fetch",
-        "data": [
-            "https://api.telegram.org/bot~TG_TOKEN~/sendVideo",
-            {
+        "data": {
+            "url": "https://api.telegram.org/bot~TG_TOKEN~/sendVideo",
+            "props": {
                 "method": "POST",
                 "body": {
                     "video": "https://media3.giphy.com/media/fdL7MOVTbYaaY/giphy.mp4?cid=f1dc8cf8l6v7r5jk5gxueqga7scy87hmjifted3vhv2a15v8&ep=v1_gifs_random&rid=giphy.mp4&ct=g",
@@ -35,6 +35,6 @@
                     "content-type": "application/json"
                 }
             }
-        ]
+        }
     }
 ]

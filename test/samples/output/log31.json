@@ -1,10 +1,9 @@
 [
     {
         "key": "fetch",
-        "data": [
-            "https://api.giphy.com/v1/gifs/random?rating=pg&api_key=~GIPHY_TOKEN~&tag=cat",
-            null
-        ]
+        "data": {
+            "url": "https://api.giphy.com/v1/gifs/random?rating=pg&api_key=~GIPHY_TOKEN~&tag=cat"
+        }
     },
     {
         "key": "dispatch",
@@ -18,10 +17,9 @@
                 241854720,
                 [
                     "fetch",
-                    [
-                        "https://api.giphy.com/v1/gifs/random?rating=pg&api_key=~GIPHY_TOKEN~&tag=cat",
-                        null
-                    ]
+                    {
+                        "url": "https://api.giphy.com/v1/gifs/random?rating=pg&api_key=~GIPHY_TOKEN~&tag=cat"
+                    }
                 ]
             ]
         ]

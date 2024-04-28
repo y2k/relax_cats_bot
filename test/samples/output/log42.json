@@ -1,9 +1,9 @@
 [
     {
         "key": "fetch",
-        "data": [
-            "https://api.telegram.org/bot~TG_TOKEN~/editMessageMedia",
-            {
+        "data": {
+            "url": "https://api.telegram.org/bot~TG_TOKEN~/editMessageMedia",
+            "props": {
                 "method": "POST",
                 "body": {
                     "media": {
@@ -39,6 +39,6 @@
                     "content-type": "application/json"
                 }
             }
-        ]
+        }
     }
 ]

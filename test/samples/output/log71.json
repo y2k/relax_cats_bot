@@ -1,17 +1,17 @@
 [
     {
         "key": "fetch",
-        "data": [
-            "https://api.giphy.com/v1/gifs/random?rating=pg&api_key=~GIPHY_TOKEN~&tag=cat",
-            {}
-        ]
+        "data": {
+            "url": "https://api.giphy.com/v1/gifs/random?rating=pg&api_key=~GIPHY_TOKEN~&tag=cat",
+            "props": {}
+        }
     },
     {
         "key": "fetch",
-        "data": [
-            "https://api.cas.chat/check?user_id=361975238",
-            {}
-        ]
+        "data": {
+            "url": "https://api.cas.chat/check?user_id=361975238",
+            "props": {}
+        }
     },
     {
         "key": "dispatch",
@@ -26,17 +26,17 @@
                 },
                 [
                     "fetch",
-                    [
-                        "https://api.giphy.com/v1/gifs/random?rating=pg&api_key=~GIPHY_TOKEN~&tag=cat",
-                        {}
-                    ]
+                    {
+                        "url": "https://api.giphy.com/v1/gifs/random?rating=pg&api_key=~GIPHY_TOKEN~&tag=cat",
+                        "props": {}
+                    }
                 ],
                 [
                     "fetch",
-                    [
-                        "https://api.cas.chat/check?user_id=361975238",
-                        {}
-                    ]
+                    {
+                        "url": "https://api.cas.chat/check?user_id=361975238",
+                        "props": {}
+                    }
                 ]
             ]
         ]

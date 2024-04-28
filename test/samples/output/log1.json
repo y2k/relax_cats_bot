@@ -1,10 +1,10 @@
 [
     {
         "key": "fetch",
-        "data": [
-            "https://api.giphy.com/v1/gifs/random?rating=pg&api_key=~GIPHY_TOKEN~&tag=cat",
-            {}
-        ]
+        "data": {
+            "url": "https://api.giphy.com/v1/gifs/random?rating=pg&api_key=~GIPHY_TOKEN~&tag=cat",
+            "props": {}
+        }
     },
     {
         "key": "dispatch",
@@ -16,10 +16,10 @@
                 "cat",
                 [
                     "fetch",
-                    [
-                        "https://api.giphy.com/v1/gifs/random?rating=pg&api_key=~GIPHY_TOKEN~&tag=cat",
-                        {}
-                    ]
+                    {
+                        "url": "https://api.giphy.com/v1/gifs/random?rating=pg&api_key=~GIPHY_TOKEN~&tag=cat",
+                        "props": {}
+                    }
                 ]
             ]
         ]
