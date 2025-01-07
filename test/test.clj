@@ -1,10 +1,10 @@
-(ns _ (:require ["../vendor/packages/effects/effects.2" :as e]
+(ns _ (:require ["../vendor/effects/effects.2" :as e]
                 ["../src/main" :as app]
                 [js.fs.promises :as fs]))
 
 (defn- rec_parse [x]
   (cond
-    (= null x) x
+    (= nil x) x
     (Array.isArray x) (.map x rec_parse)
     (= (type x) "object") (and x (-> (Object.entries x)
                                      (.reduce (fn [a x] (assoc a (get x 0) (rec_parse (get x 1)))) {})))
@@ -14,7 +14,7 @@
 (defn- assert [path]
   (->
    (fs/readFile (.replace path "/input/" "/output/") "utf-8")
-   (.catch (fn [] null))
+   (.catch (fn [] nil))
    (.then
     (fn [log_json]
       (->
@@ -41,10 +41,10 @@
              (app/handle_event event.key event.data)
              (e/run_effect {:perform test_eff_handler})
              (.then (fn []
-                      (if (= log_json null)
-                        (fs/writeFile (.replace path "/input/" "/output/") (JSON.stringify (rec_parse fx_log) null 4))
-                        (if (= log.length 0) null
-                            (FIXME "Log not consumed: " path "\n" (JSON.stringify (.toReversed log) null 2)))))))))))))))
+                      (if (= log_json nil)
+                        (fs/writeFile (.replace path "/input/" "/output/") (JSON.stringify (rec_parse fx_log) nil 4))
+                        (if (= log.length 0) nil
+                            (FIXME "Log not consumed: " path "\n" (JSON.stringify (.toReversed log) nil 2)))))))))))))))
 
 (let [path "../test/samples/input/"]
   (->
