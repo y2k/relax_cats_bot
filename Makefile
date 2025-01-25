@@ -3,7 +3,7 @@ OUT_DIR = .github/bin
 .PHONY: test
 test: build
 	@ echo '{"type": "module"}' > $(OUT_DIR)/package.json
-	@ clj2js compile -target js -src test/test.clj > $(OUT_DIR)/test/test.js
+	@ export OCAMLRUNPARAM=b && clj2js compile -target js -src test/test.clj > $(OUT_DIR)/test/test.js
 	@ cd .github && node --env-file=.dev.vars bin/test/test.js
 
 .PHONY: run
@@ -13,8 +13,8 @@ run: hook
 .PHONY: build
 build:
 	@ mkdir -p $(OUT_DIR)/src && mkdir -p $(OUT_DIR)/test && mkdir -p $(OUT_DIR)/vendor/effects
-	@ clj2js compile -target js -src vendor/effects/effects.2.clj > $(OUT_DIR)/vendor/effects/effects.2.js
-	@ clj2js compile -target js -src src/main.clj > $(OUT_DIR)/src/main.js
+	@ export OCAMLRUNPARAM=b && clj2js compile -target js -src vendor/effects/effects.2.clj > $(OUT_DIR)/vendor/effects/effects.2.js
+	@ export OCAMLRUNPARAM=b && clj2js compile -target js -src src/main.clj > $(OUT_DIR)/src/main.js
 
 .PHONY: clean
 clean:
