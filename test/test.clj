@@ -1,4 +1,4 @@
-(ns _ (:require ["../vendor/effects/effects.2" :as e]
+(ns _ (:require ["../src/vendor/effects/effects" :as e]
                 ["../src/main" :as app]
                 [js.fs.promises :as fs]))
 

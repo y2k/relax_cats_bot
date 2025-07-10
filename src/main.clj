@@ -1,4 +1,4 @@
-(ns _ (:require ["../vendor/effects/effects.2" :as e]))
+(ns _ (:require ["./vendor/effects/effects" :as e]))
 
 (def- RELOAD_LIMIT 3)
 
