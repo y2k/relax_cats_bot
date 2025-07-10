@@ -81,32 +81,32 @@
                       :headers {"content-type" "application/json"}})))
     (e/pure nil)))
 
-(defn- try_handle_new_user_end [chat_id message_id user img_json cas_json]
-  (if cas_json.ok
-    (e/fetch
-     "https://api.telegram.org/bot~TG_TOKEN~/sendVideo"
-     {:method "POST"
-      :body (JSON.stringify
-             {:video img_json.data.images.original.mp4
-              :chat_id chat_id
-              :parse_mode :MarkdownV2
-              :caption
-              (let [username (str "[" user.name "](tg://user?id=" user.id ")")]
-                (str "Админ, забань " username " - он точно спамер!!! [Пруф](https://cas.chat/query?u=" user.id ")"))})
-      :headers {"content-type" "application/json"}})
-    (e/pure nil)))
+;; (defn- try_handle_new_user_end [chat_id message_id user img_json cas_json]
+;;   (if cas_json.ok
+;;     (e/fetch
+;;      "https://api.telegram.org/bot~TG_TOKEN~/sendVideo"
+;;      {:method "POST"
+;;       :body (JSON.stringify
+;;              {:video img_json.data.images.original.mp4
+;;               :chat_id chat_id
+;;               :parse_mode :MarkdownV2
+;;               :caption
+;;               (let [username (str "[" user.name "](tg://user?id=" user.id ")")]
+;;                 (str "Админ, забань " username " - он точно спамер!!! [Пруф](https://cas.chat/query?u=" user.id ")"))})
+;;       :headers {"content-type" "application/json"}})
+;;     (e/pure nil)))
 
-(defn- try_handle_new_user [json]
-  (if-let [user_id json?.message?.new_chat_member?.id
-           user {:name json?.message?.new_chat_member?.first_name
-                 :id user_id}
-           message_id json?.message?.message_id
-           chat_id json?.message?.chat?.id]
-    (broadcast :try_handle_new_user_end
-               (e/seq (e/fetch "https://api.giphy.com/v1/gifs/random?rating=pg&api_key=~GIPHY_TOKEN~&tag=cat" {})
-                      (e/fetch (str "https://api.cas.chat/check?user_id=" user_id) {}))
-               (fn [[cat_json cas_json]] [chat_id message_id user cat_json cas_json]))
-    (e/pure nil)))
+;; (defn- try_handle_new_user [json]
+;;   (if-let [user_id json?.message?.new_chat_member?.id
+;;            user {:name json?.message?.new_chat_member?.first_name
+;;                  :id user_id}
+;;            message_id json?.message?.message_id
+;;            chat_id json?.message?.chat?.id]
+;;     (broadcast :try_handle_new_user_end
+;;                (e/seq (e/fetch "https://api.giphy.com/v1/gifs/random?rating=pg&api_key=~GIPHY_TOKEN~&tag=cat" {})
+;;                       (e/fetch (str "https://api.cas.chat/check?user_id=" user_id) {}))
+;;                (fn [[cat_json cas_json]] [chat_id message_id user cat_json cas_json]))
+;;     (e/pure nil)))
 
 (defn- handle_rate_limit [data]
   (if-let [user_id (or data?.update?.message?.from?.id data?.update?.callback_query?.from?.id)
@@ -121,11 +121,12 @@
     :raw_telegram (handle_rate_limit data)
     :telegram (e/batch [(try_handle_cat_command data)
                         (try_handle_button_click data)
-                        (try_handle_new_user data)])
+                        ;; (try_handle_new_user data)
+                        ])
     :welcome_screen_sended (delete_message_welcome_message (get data 0))
     :try_handle_cat_command_send (try_handle_cat_command_send (get data 0) (get data 1) (get data 2) (get data 3))
     :try_handle_button_click_image (try_handle_button_click_image (get data 0) (get data 1) (get data 2) (get data 3) (get data 4) (get data 5))
-    :try_handle_new_user_end (try_handle_new_user_end (get data 0) (get data 1) (get data 2) (get data 3) (get data 4))
+    ;; :try_handle_new_user_end (try_handle_new_user_end (get data 0) (get data 1) (get data 2) (get data 3) (get data 4))
     (e/pure nil)))
 
 (def GLOBAL_REQUEST_TIMES (atom {}))
@@ -139,13 +140,13 @@
               (let [world (->
                            env
                            e/attach_empty_effect_handler
-                           (e/attach_eff :sleep
-                                         (fn [_ timeout]
-                                           (Promise. (fn [resolve] (setTimeout resolve (* 1000 timeout))))))
-                           (e/attach_eff :fork
-                                         (fn [world fx]
-                                           (.waitUntil ctx (fx world))
-                                           (Promise.resolve nil)))
+                          ;;  (e/attach_eff :sleep
+                          ;;                (fn [_ timeout]
+                          ;;                  (Promise. (fn [resolve] (setTimeout resolve (* 1000 timeout))))))
+                          ;;  (e/attach_eff :fork
+                          ;;                (fn [world fx]
+                          ;;                  (.waitUntil ctx (fx world))
+                          ;;                  (Promise.resolve nil)))
                            (e/attach_eff :db
                                          (fn [_ db]
                                            (reset! GLOBAL_REQUEST_TIMES db)

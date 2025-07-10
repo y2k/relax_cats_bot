@@ -1,6 +1,6 @@
 (ns _ (:require ["../src/vendor/effects/effects" :as e]
                 ["../src/main" :as app]
-                [js.fs.promises :as fs]))
+                ["fs/promises" :as fs]))
 
 (defn- rec_parse [x]
   (cond

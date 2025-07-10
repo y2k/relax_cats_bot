@@ -1,10 +1,14 @@
 OUT_DIR = .github/bin
 
-# .PHONY: test
-# test: build
-# 	@ echo '{"type": "module"}' > $(OUT_DIR)/package.json
-# 	@ export OCAMLRUNPARAM=b && clj2js compile -target js -src test/test.clj > $(OUT_DIR)/test/test.js
-# 	@ cd .github && node --env-file=.dev.vars bin/test/test.js
+.PHONY: playground
+playground: build
+	@ set -a && source .github/.dev.vars && node .github/bin/test/playground.js
+
+.PHONY: test
+test: build
+	@ echo '{"type": "module"}' > $(OUT_DIR)/package.json
+# @ export OCAMLRUNPARAM=b && clj2js compile -target js -src test/test.clj > $(OUT_DIR)/test/test.js
+	@ cd .github && node --env-file=.dev.vars bin/test/test.js
 
 # .PHONY: run
 # run: hook
@@ -23,12 +27,12 @@ build:
 clean:
 	@ rm -rf $(OUT_DIR)
 
-# .PHONY: hook
-# hook:
-# 	@NGROK_API="http://localhost:4040/api/tunnels" ; \
-# 	NGROK_URL=$$(curl -s $$NGROK_API | grep -o '"public_url":"[^"]*' | grep -o 'http[^"]*') ; \
-# 	source .dev.vars ; \
-# 	curl "https://api.telegram.org/bot$$TG_TOKEN/setWebhook?max_connections=1&drop_pending_updates=true&url=$$NGROK_URL"
+.PHONY: hook
+hook:
+	@NGROK_API="http://localhost:4040/api/tunnels" ; \
+	NGROK_URL=$$(curl -s $$NGROK_API | grep -o '"public_url":"[^"]*' | grep -o 'http[^"]*') ; \
+	source .github/.dev.vars ; \
+	curl "https://api.telegram.org/bot$$TG_TOKEN/setWebhook?max_connections=1&drop_pending_updates=true&url=$$NGROK_URL"
 
 # .PHONY: db
 # db:
