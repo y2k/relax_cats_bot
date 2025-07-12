@@ -1,10 +1,11 @@
 name = "relax-cats-bot"
-main = "bin/main.js"
-compatibility_date = "2023-10-30"
-node_compat = false
+main = "bin/src/main.js"
+compatibility_flags = ["nodejs_compat"]
+compatibility_date = "2024-09-23"
+dev.port = 8080
 
 [build]
-command = "make build"
+command = "cd .. && make build"
 watch_dir = ["../src"]
 
 [[d1_databases]]

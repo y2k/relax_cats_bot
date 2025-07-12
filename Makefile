@@ -4,15 +4,15 @@ OUT_DIR = .github/bin
 playground: build
 	@ set -a && source .github/.dev.vars && node .github/bin/test/playground.js
 
-.PHONY: test
-test: build
-	@ echo '{"type": "module"}' > $(OUT_DIR)/package.json
-# @ export OCAMLRUNPARAM=b && clj2js compile -target js -src test/test.clj > $(OUT_DIR)/test/test.js
-	@ cd .github && node --env-file=.dev.vars bin/test/test.js
+# .PHONY: test
+# test: build
+# 	@ echo '{"type": "module"}' > $(OUT_DIR)/package.json
+# # @ export OCAMLRUNPARAM=b && clj2js compile -target js -src test/test.clj > $(OUT_DIR)/test/test.js
+# 	@ cd .github && node --env-file=.dev.vars bin/test/test.js
 
-# .PHONY: run
-# run: hook
-# 	@ cd .github && wrangler dev
+.PHONY: run
+run: hook
+	@ cd .github && wrangler dev
 
 .PHONY: build
 build:
