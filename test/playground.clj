@@ -29,15 +29,28 @@
                          :length 4
                          :type :bot_command}]}})
 
-;; (let [requests (atom [])
-;;       env {:fetch:fetch (fn [x]
-;;                           (swap! requests (fn [xs] (conj xs x)))
-;;                           ((io/pure {:data {:images {:original {:mp4 "img"}}}}) nil))}]
-;;   (.then
-;;    (first
-;;     ((cat/try_handle_cat_command (create_message "/cat")) env))
-;;    (fn []
-;;      (eprintln __LOC__ (last (deref requests))))))
+(defn- assert [expected_val actual_val]
+  (let [actual (edn/to_string actual_val)
+        expected (edn/to_string expected_val)]
+    (if (= actual expected)
+      (eprintln "OK")
+      (FIXME expected " != " actual))))
+
+(let [requests (atom [])
+      env {:fetch:fetch (fn [x]
+                          (swap! requests (fn [xs] (conj xs x)))
+                          ((io/pure {:data {:images {:original {:mp4 "img"}}}}) nil))}]
+  (.then
+   (first
+    ((cat/try_handle_cat_command (create_message "/cat")) env))
+   (fn []
+     (let [expected (edn/to_string
+                     {:url "https://api.telegram.org/bot~TG_TOKEN~/sendVideo"
+                      :props {:method :POST
+                              :body "{\"video\":{\"data\":{\"images\":{\"original\":{\"mp4\":\"img\"}}}},\"chat_id\":241854720,\"reply_markup\":{\"inline_keyboard\":[[{\"text\":\"Next [3]\",\"callback_data\":\"{\\\"c\\\":1,\\\"u\\\":241854720,\\\"t\\\":\\\"cat\\\"}\"},{\"text\":\"Save\",\"callback_data\":\"{\\\"c\\\":-1,\\\"u\\\":241854720,\\\"t\\\":\\\"cat\\\"}\"}]]}}"
+                              :headers {"content-type" "application/json"}}})
+           actual (edn/to_string (last (deref requests)))]
+       (eprintln __LOC__ "\n" (last (deref requests)) "\n" actual "\n" (= expected actual))))))
 
 ;; ====================================================================
 
@@ -55,21 +68,3 @@
 
 ;; (let [server (.createServer http (make_handler))]
 ;;   (.listen server 8080 (fn [] (println "Сервер запущен на порту 8080"))))
-
-;; ====================================================================
-
-(defn call_effect [id]
-  (rl/limit
-   (create_message "/cat")
-   (e/thunk (fn [] (eprintln "Inner Effect called:" id)))))
-
-((e/batch [(call_effect 1)
-           (call_effect 2)])
- (->>
-  {}
-  (date/effect_handler)
-  (state/effect_handler {:users {}})))
-
-;; (eprintln
-;;  __LOC__
-;;  ((date/get_now) (date/effect_handler {})))

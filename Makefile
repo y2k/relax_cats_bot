@@ -4,6 +4,10 @@ OUT_DIR = .github/bin
 playground: build
 	@ set -a && source .github/.dev.vars && node .github/bin/test/playground.js
 
+.PHONY: test
+test: build
+	@ set -a && source .github/.dev.vars && node .github/bin/test/test.js
+
 # .PHONY: test
 # test: build
 # 	@ echo '{"type": "module"}' > $(OUT_DIR)/package.json
