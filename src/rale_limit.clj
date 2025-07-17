@@ -1,6 +1,6 @@
 (ns _ (:require ["./vendor/effects/effects" :as e]
-                ["./state" :as s]
-                ["./date" :as date]))
+                ["./vendor/effects-tools/state" :as s]
+                ["./vendor/effects-tools/date" :as date]))
 
 (defn limit [update base_fx]
   (e/then

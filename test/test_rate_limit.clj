@@ -1,7 +1,7 @@
 (ns _ (:require
-       ["../src/date" :as date]
-       ["../src/state" :as state]
        ["../src/rale_limit" :as rl]
+       ["../src/vendor/effects-tools/date" :as date]
+       ["../src/vendor/effects-tools/state" :as state]
        ["../src/vendor/effects/effects" :as e]
        ["./vendor/edn/main" :as edn]))
 

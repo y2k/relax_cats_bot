@@ -1,12 +1,6 @@
 (ns _ (:require
        ["../src/command_cat" :as cat]
-       ["../src/date" :as date]
-       ["../src/main" :as main]
-       ["../src/state" :as state]
-       ["../src/rale_limit" :as rl]
        ["../src/vendor/effects-promise/index" :as io]
-       ["../src/vendor/effects/effects" :as e]
-       ["../src/vendor/fetch/index" :as f]
        ["./vendor/edn/main" :as edn]))
 
 (defn- create_message [text]
